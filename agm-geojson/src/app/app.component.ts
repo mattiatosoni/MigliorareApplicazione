@@ -23,12 +23,12 @@ export class AppComponent implements OnInit {
   lat: number = 45.45227445505016;
 
   constructor(public http: HttpClient) {
-  
+
   }
 
   prepareData = (data: GeoFeatureCollection) => {
     this.geoJsonObject = data
-    
+
 
     console.log(this.geoJsonObject)
 
@@ -45,19 +45,19 @@ export class AppComponent implements OnInit {
   {
     console.log(data);
     this.markers = [];
-  
+
     for (const iterator of data) {
       let m = new Marker(iterator.WGS84_X,iterator.WGS84_Y,iterator.CI_VETTORE);
       this.markers.push(m);
     }
-    
+
   }
 
   ngOnInit() {
-    this.obsGeoData = this.http.get<GeoFeatureCollection>("http://localhost:3000");
+    this.obsGeoData = this.http.get<GeoFeatureCollection>("https://3000-ecffcf4b-67ec-497e-b367-d1da5f119cff.ws-eu01.gitpod.io");
     this.obsGeoData.subscribe(this.prepareData);
 
-    this.obsCiVett = this.http.get<Ci_vettore[]>("http://localhost:3000/ci_vettore/90");
+    this.obsCiVett = this.http.get<Ci_vettore[]>("https://3000-ecffcf4b-67ec-497e-b367-d1da5f119cff.ws-eu01.gitpod.io/ci_vettore/90");
     this.obsCiVett.subscribe(this.prepareCiVettData);
     //Uso di un ciclo foreach per riempire i marker
   }
@@ -78,7 +78,7 @@ export class AppComponent implements OnInit {
 }
 
 
-// future use 
+// future use
 
 
 /*constructor(public http: HttpClient)
