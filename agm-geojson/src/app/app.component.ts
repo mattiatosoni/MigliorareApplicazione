@@ -43,36 +43,37 @@ export class AppComponent implements OnInit {
 
   prepareCiVettData = (data: Ci_vettore[]) =>
   {
+    let latTot = 0; //Uso queste due variabili per calcolare latitudine e longitudine media
+    let lngTot = 0; //E centrare la mappa
+
     console.log(data);
     this.markers = [];
 
     for (const iterator of data) {
       let m = new Marker(iterator.WGS84_X,iterator.WGS84_Y,iterator.CI_VETTORE);
+      latTot += m.lat; //Sommo tutte le latitutidini e longitudini
+      lngTot += m.lng;
       this.markers.push(m);
     }
-
+    this.lng = lngTot/data.length; //Commenta qui
+    this.lat = latTot/data.length;
+    this.zoom = 16;
   }
 
   ngOnInit() {
-    this.obsGeoData = this.http.get<GeoFeatureCollection>("https://3000-ecffcf4b-67ec-497e-b367-d1da5f119cff.ws-eu01.gitpod.io");
+    this.obsGeoData = this.http.get<GeoFeatureCollection>("http://localhost:3000");
     this.obsGeoData.subscribe(this.prepareData);
-
-    this.obsCiVett = this.http.get<Ci_vettore[]>("https://3000-ecffcf4b-67ec-497e-b367-d1da5f119cff.ws-eu01.gitpod.io/ci_vettore/90");
-    this.obsCiVett.subscribe(this.prepareCiVettData);
-    //Uso di un ciclo foreach per riempire i marker
+    //Rimuovi la chiamata http a `TUO_URL/ci_vettore/${val}`
   }
 
-  styleFunc = (feature) => {
-    /*console.log(feature.i.id)
-    let newColor = "#FF0000"; //RED
-    if (feature.i.id == 0) newColor = "#00FF00"; //GREEN
-    else newColor = "#0000FF"; //BLUE*/
-
-    return ({
-      clickable: false,
-      fillColor: this.fillColor,
-      strokeWeight: 1
-    });
+  //Questo metodo richiama la route sul server che recupera il foglio specificato nella casella di testo
+  cambiaFoglio(foglio) : boolean
+  {
+    let val = foglio.value; //Commenta qui
+    this.obsCiVett = this.http.get<Ci_vettore[]>(`TUO_URL/ci_vettore/${val}`);  //Commenta qui
+    this.obsCiVett.subscribe(this.prepareCiVettData); //Commenta qui
+    console.log(val);
+    return false;
   }
 
 }
